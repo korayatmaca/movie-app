@@ -13,9 +13,9 @@ export class MoviesService {
     private httpService: HttpService,
   ) {}
 
-  async fetchMovies() {
+  async fetchNowPlayingMovies() {
     try {
-        const url = process.env.MOVIES_API_URL;
+        const url = process.env.NOW_PLAYING_MOVIES_API_URL;
         const options = {
           headers: {
             accept: 'application/json',
@@ -53,10 +53,7 @@ export class MoviesService {
     }
 
     async createMovie(createMovieDto: CreateMovieDto) {
-        const movie = new this.movieModel({
-          id: new Types.ObjectId(),
-          ...createMovieDto
-        });
+        const movie = new this.movieModel(createMovieDto);
         return movie.save();
       }
     

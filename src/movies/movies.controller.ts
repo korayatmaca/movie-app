@@ -6,6 +6,11 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
+  @Get('fetchNowPlayingMovies')
+  getMoviesFromTMDB() {
+    return this.moviesService.fetchNowPlayingMovies();
+  }
+
   @Get()
   getMovies() {
     return this.moviesService.getMovies();
