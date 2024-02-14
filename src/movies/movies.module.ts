@@ -8,8 +8,8 @@ import { MoviesController } from './movies.controller';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Movie.name, schema: MovieSchema }]),
-    HttpModule, // Add this line
-    // other imports...
+    HttpModule, 
+
   ],
   providers: [MoviesService],
   controllers: [MoviesController],
