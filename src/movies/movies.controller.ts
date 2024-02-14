@@ -6,7 +6,7 @@ import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('movies')
 export class MoviesController {
-  constructor(private readonly moviesService: MoviesService) {}
+  constructor(private readonly moviesService: MoviesService) { }
 
   /*@Get('fetchNowPlayingMovies')
   getMoviesFromTMDB() {
@@ -20,7 +20,7 @@ export class MoviesController {
   @ApiQuery({ name: 'with_watch_providers', required: false, type: String, description: 'default:8' })
   @ApiQuery({ name: 'watch_region', required: false, type: String, description: 'default:TR' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'default:1' })
-  getDiscoverMovies( @Query() params: DiscoverMoviesDto ) {
+  getDiscoverMovies(@Query() params: DiscoverMoviesDto) {
     return this.moviesService.getDiscoverMovies(params);
   }
 
