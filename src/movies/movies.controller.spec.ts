@@ -1,13 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Test, TestingModule } from '@nestjs/testing';
 import { MoviesController } from './movies.controller';
 import { MoviesService } from './movies.service';
-import { CreateMovieDto } from '../movies/dto/create-movie.dto';
+import { CreateMovieDto } from './dto/create-movie.dto';
 
 describe('MoviesController', () => {
   let controller: MoviesController;
   let service: MoviesService;
 
+  // Updated mockMovie to reflect the new structure.
   const mockMovie: CreateMovieDto = {
     id: 1,
     title: "Test Movie",
@@ -26,11 +26,12 @@ describe('MoviesController', () => {
         {
           provide: MoviesService,
           useValue: {
-            getMovies: jest.fn().mockResolvedValue([]),
-            getMovieById: jest.fn().mockResolvedValue({}),
-            createMovie: jest.fn().mockImplementation((dto: CreateMovieDto) => Promise.resolve(dto === mockMovie ? mockMovie : null)),
-            updateMovie: jest.fn().mockResolvedValue({}),
-            deleteMovie: jest.fn().mockResolvedValue({}),
+            getMovies: jest.fn().mockResolvedValue([mockMovie]),
+            getMovieById: jest.fn().mockResolvedValue(mockMovie),
+            createMovie: jest.fn().mockResolvedValue(mockMovie),
+            updateMovie: jest.fn().mockResolvedValue(mockMovie),
+            deleteMovie: jest.fn().mockResolvedValue(null),
+            getDiscoverMovies: jest.fn().mockResolvedValue([mockMovie]),
           },
         },
       ],
@@ -44,11 +45,56 @@ describe('MoviesController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('createMovie', () => {
-    it('should create a movie', async () => {
-      expect(await controller.createMovie(mockMovie)).toBe(mockMovie);
+  describe('getMovies', () => {
+    it('should return an array of movies', async () => {
+      expect(await controller.getMovies()).toEqual([mockMovie]);
     });
   });
 
-  // Add more tests here
+  describe('getMovie', () => {
+    it('should return a single movie', async () => {
+      const movieId = '1';
+      expect(await controller.getMovie(movieId)).toEqual(mockMovie);
+      expect(service.getMovieById).toHaveBeenCalledWith(movieId);
+    });
+  });
+
+  describe('createMovie', () => {
+    it('should create a movie', async () => {
+      expect(await controller.createMovie(mockMovie)).toEqual(mockMovie);
+      expect(service.createMovie).toHaveBeenCalledWith(mockMovie);
+    });
+  });
+
+  describe('updateMovie', () => {
+    it('should update a movie', async () => {
+      const movieId = mockMovie.id.toString();
+      expect(await controller.updateMovie(movieId, mockMovie)).toEqual(mockMovie);
+      expect(service.updateMovie).toHaveBeenCalledWith(movieId, mockMovie);
+    });
+  });
+
+  describe('deleteMovie', () => {
+    it('should delete a movie', async () => {
+      const movieId = mockMovie.id.toString();
+      await controller.deleteMovie(movieId);
+      expect(service.deleteMovie).toHaveBeenCalledWith(movieId);
+    });
+  });
+
+  describe('getDiscoverMovies', () => {
+    it('should return an array of movies', async () => {
+      const discoverMoviesDto = {
+        sort_by: 'primary_release_date.asc',
+        vote_count: 1500,
+        vote_average: 8.4,
+        with_watch_providers: '8',
+        watch_region: 'TR',
+        page: 1,
+      };
+      expect(await controller.getDiscoverMovies(discoverMoviesDto)).toEqual([mockMovie]);
+      expect(service.getDiscoverMovies).toHaveBeenCalledWith(discoverMoviesDto);
+    });
+  });
+
 });

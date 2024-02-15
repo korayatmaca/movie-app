@@ -8,10 +8,6 @@ import { ApiQuery } from '@nestjs/swagger';
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) { }
 
-  /*@Get('fetchNowPlayingMovies')
-  getMoviesFromTMDB() {
-    return this.moviesService.fetchNowPlayingMovies();
-  }*/
 
   @Get('discoverMovies')
   @ApiQuery({ name: 'sort_by', required: false, type: String, description: 'default:primary_release_date.asc ' })
